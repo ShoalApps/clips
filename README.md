@@ -3,7 +3,8 @@
 A Material You app for short videos, part of [Tintloom](https://tintloom.github.io): YouTube Shorts,
 TikTok and Instagram Reels in one calm, Material 3 Expressive feed.
 
-**Status: planned.** This repository holds the design; the app is being built next.
+**Status: early.** The YouTube Shorts feed works, and TikTok and Reels links open in their official
+embed players. Install `TintloomClips.apk` from the newest [release](https://github.com/Tintloom/clips/releases/latest).
 
 ## Plan
 

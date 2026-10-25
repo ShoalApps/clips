@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="search"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_search"
+        android:shortcutShortLabel="@string/shortcut_search">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="materialtube://search"
+            android:targetPackage="io.github.tintloom.clips"
+            android:targetClass="io.github.tintloom.clips.MainActivity" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="subs"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_subs"
+        android:shortcutShortLabel="@string/shortcut_subs">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="materialtube://subs"
+            android:targetPackage="io.github.tintloom.clips"
+            android:targetClass="io.github.tintloom.clips.MainActivity" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="shorts"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_shorts"
+        android:shortcutShortLabel="@string/shortcut_shorts">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="materialtube://shorts"
+            android:targetPackage="io.github.tintloom.clips"
+            android:targetClass="io.github.tintloom.clips.MainActivity" />
+    </shortcut>
+</shortcuts>
