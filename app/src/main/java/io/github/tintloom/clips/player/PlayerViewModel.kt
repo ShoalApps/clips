@@ -183,9 +183,7 @@ class PlayerViewModel : ViewModel() {
         }
         when {
             s.loopVideo -> { player.seekTo(0); player.play() }
-            s.autoplayNext && !fullscreen -> related.firstOrNull()?.let { next ->
-                if (sheetVisible) open(next)
-            }
+            s.autoplayNext && !fullscreen && sheetVisible && current != null -> related.firstOrNull()?.let(::open)
         }
     }
 
@@ -405,6 +403,10 @@ class PlayerViewModel : ViewModel() {
     }
 
     val hasMoreComments get() = commentsNext != null
+
+    /** Your like/dislike on each comment, shown straight away. */
+
+    /** Likes or dislikes a comment (tapping the same again clears it). Returns a message to show, or null. */
 
     /** Changes quality for this video only; the defaults live in Settings. */
     fun changeQuality(q: Int) {
