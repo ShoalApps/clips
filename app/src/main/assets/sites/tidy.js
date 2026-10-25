@@ -1,4 +1,4 @@
-// Swordfish Clips: makes TikTok's and Instagram's websites feel like their apps by removing the
+// Clownfish: makes TikTok's and Instagram's websites feel like their apps by removing the
 // prompts web visitors get (open the app, get the app, sign-up nags, cookie banners). Optional
 // cookies are declined. Runs on every page of the two sites; does nothing anywhere else.
 (function () {

@@ -15,5 +15,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SwordfishClips"
+rootProject.name = "Clownfish"
 include(":app")

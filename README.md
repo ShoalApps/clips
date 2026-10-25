@@ -1,22 +1,22 @@
-# Swordfish Clips
+# Clownfish
 
-A Material You app for short videos, part of [Swordfish](https://swordfishapps.github.io): YouTube Shorts,
+A Material You app for short videos, part of [Shoal](https://shoalapps.github.io): YouTube Shorts,
 TikTok and Instagram Reels in one calm, Material 3 Expressive feed.
 
-Install `SwordfishClips.apk` from the newest [release](https://github.com/SwordfishApps/clips/releases/latest).
+Install `Clownfish.apk` from the newest [release](https://github.com/ShoalApps/clownfish/releases/latest).
 
 ## What it does
 
 - **Three tabs, one app**: Shorts · TikTok · Reels along the top. Turn any of them off, and choose
   which one opens first.
-- **YouTube Shorts**: a native feed built on NewPipeExtractor, like Swordfish Video, at the best
+- **YouTube Shorts**: a native feed built on NewPipeExtractor, like Anglerfish, at the best
   quality (1080p and up), with YouTube, TikTok or Reels layouts, Return YouTube Dislike, DeArrow,
   comment likes, and per-visit and daily limits. Sign in to YouTube for likes and Shorts picked for you.
 - **TikTok and Instagram Reels**: their own websites in the app, signed in with your own accounts on
   their own login pages (your password goes only to them). Phones get their mobile sites, tablets
   and Chromebooks their desktop ones. Each tab keeps its place, and only the one on screen plays.
 - **Links**: open or share a Shorts, TikTok or Reels link with Clips and it lands in the right tab.
-- **Settings like the other Swordfish apps**: accounts for all three, sources, theme and wallpaper
+- **Settings like the other Shoal apps**: accounts for all three, sources, theme and wallpaper
   colours, Shorts options, screen time, updates, About, and hidden developer settings.
 
 ## Why the tabs aren't one blended feed
