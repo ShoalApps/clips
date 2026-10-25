@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -389,6 +391,103 @@ fun DeveloperSettingsScreen(onBack: () -> Unit) {
 private const val GITHUB_USER = "calamityCocoa"
 
 @Composable
+fun ClipsSettingsScreen(
+    onBack: () -> Unit,
+    onYouTubeSignIn: () -> Unit,
+    onSwitchChannel: () -> Unit,
+    onSiteSignIn: (io.github.tintloom.clips.Site) -> Unit,
+    onDeveloper: () -> Unit,
+    onAbout: () -> Unit,
+) {
+    val store = AppGraph.store
+    val s by store.settings.collectAsState()
+    val account by store.account.collectAsState()
+    val cookie by store.cookie.collectAsState()
+    val signedIn = cookie?.contains("SAPISID") == true
+    var choice by remember { mutableStateOf<Choice?>(null) }
+    val update: ((Settings) -> Settings) -> Unit = { store.updateSettings(it) }
+    // Site logins live in the WebView's cookies; re-read them each time Settings opens.
+    var sites by remember { mutableIntStateOf(0) }
+    val tiktokIn = remember(sites) { io.github.tintloom.clips.Site.TIKTOK.signedIn }
+    val reelsIn = remember(sites) { io.github.tintloom.clips.Site.REELS.signedIn }
+
+    SettingsScaffold("Settings", onBack) {
+        group("Accounts") {
+            if (signedIn) {
+                row { sh -> Row2(account?.name ?: "YouTube", account?.handle ?: "Signed in to YouTube", sh) {
+                    TextButton(onClick = { AppGraph.signOut() }) { Text("Sign out") }
+                } }
+                row { sh -> Link("Switch YouTube channel", "Use a different channel on this Google account", sh, onClick = onSwitchChannel) }
+            } else {
+                row { sh -> Link("Sign in to YouTube", "Likes, subscriptions and Shorts picked for you", sh, onClick = onYouTubeSignIn) }
+            }
+            for ((site, isIn) in listOf(io.github.tintloom.clips.Site.TIKTOK to tiktokIn, io.github.tintloom.clips.Site.REELS to reelsIn)) {
+                val name = if (site == io.github.tintloom.clips.Site.TIKTOK) "TikTok" else "Instagram"
+                if (isIn) {
+                    row { sh -> Row2(name, "Signed in", sh) {
+                        TextButton(onClick = { site.signOut(); sites++ }) { Text("Sign out") }
+                    } }
+                } else {
+                    row { sh -> Link("Sign in to $name", "On $name's own sign-in page; your password never passes through Clips", sh) { onSiteSignIn(site) } }
+                }
+            }
+        }
+
+        group("Sources") {
+            row { sh -> Toggle("YouTube Shorts", null, !s.shortsDisabled, sh) { v -> update { it.copy(shortsDisabled = !v) } } }
+            row { sh -> Toggle("TikTok", "TikTok's website, signed in with your account", s.showTikTok, sh) { v -> update { it.copy(showTikTok = v) } } }
+            row { sh -> Toggle("Instagram Reels", "Instagram's website, signed in with your account", s.showReels, sh) { v -> update { it.copy(showReels = v) } } }
+            row { sh ->
+                val keys = listOf("shorts", "tiktok", "reels")
+                Segmented("Open on", listOf("Shorts", "TikTok", "Reels"), keys.indexOf(s.startTab).coerceAtLeast(0), sh) { i -> update { it.copy(startTab = keys[i]) } }
+            }
+        }
+
+        group("Appearance") {
+            row { sh -> Segmented("Theme", listOf("Auto", "Light", "Dark"), s.theme, sh) { i -> update { it.copy(theme = i) } } }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                row { sh -> Toggle("Dynamic colour", "Match colours to your wallpaper", s.dynamicColor, sh) { v -> update { it.copy(dynamicColor = v) } } }
+            }
+        }
+
+        if (!s.shortsDisabled) group("YouTube Shorts") {
+            row { sh ->
+                val keys = listOf("youtube", "tiktok", "reels")
+                Segmented("Layout", listOf("YouTube", "TikTok", "Reels"), keys.indexOf(s.shortsLayout).coerceAtLeast(0), sh) { i -> update { it.copy(shortsLayout = keys[i]) } }
+            }
+            row { sh -> Toggle("Return YouTube Dislike", "Show dislike counts", s.ryd, sh) { v -> update { it.copy(ryd = v) } } }
+            row { sh -> Toggle("DeArrow", "Replace clickbait titles", s.deArrow, sh) { v -> update { it.copy(deArrow = v) } } }
+        }
+
+        group("Screen time") {
+            row { sh ->
+                val opts = listOf(0, 5, 10, 20, 50).map { (if (it == 0) "No limit" else "$it Shorts") to it.toString() }
+                Link("Limit per visit", if (s.shortsSessionLimit == 0) "No limit" else "${s.shortsSessionLimit} Shorts, then a break screen", sh) {
+                    choice = Choice("Shorts per visit", opts, s.shortsSessionLimit.toString()) { v -> update { it.copy(shortsSessionLimit = v.toInt()) } }
+                }
+            }
+            row { sh ->
+                val today = store.shortsMsToday() / 60_000
+                val opts = listOf(0, 10, 15, 30, 60, 90).map { (if (it == 0) "No limit" else "$it minutes") to it.toString() }
+                Link("Daily time limit", (if (s.shortsDailyMinutes == 0) "No limit" else "${s.shortsDailyMinutes} minutes a day") + " · $today min today", sh) {
+                    choice = Choice("Shorts per day", opts, s.shortsDailyMinutes.toString()) { v -> update { it.copy(shortsDailyMinutes = v.toInt()) } }
+                }
+            }
+        }
+
+        group("Updates") {
+            row { sh -> Toggle("Check for updates", "Look for a new version on GitHub once a day", s.autoUpdate, sh) { v -> update { it.copy(autoUpdate = v) } } }
+        }
+
+        group("More") {
+            if (s.developerMode) row { sh -> Link("Developer settings", "Advanced tweaks and debugging", sh, onClick = onDeveloper) }
+            row { sh -> Link("About Tintloom Clips", "Version, credits and licence", sh, onClick = onAbout) }
+        }
+    }
+    choice?.let { c -> ChoiceDialog(c) { choice = null } }
+}
+
+@Composable
 fun AboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val s by AppGraph.store.settings.collectAsState()
@@ -401,7 +500,7 @@ fun AboutScreen(onBack: () -> Unit) {
         item {
             Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MorphingAvatar("https://github.com/$GITHUB_USER.png?size=460", 200.dp)
-                Text("Tintloom Video", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black, modifier = Modifier.padding(top = 20.dp))
+                Text("Tintloom Clips", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black, modifier = Modifier.padding(top = 20.dp))
                 Text(
                     "Made by @$GITHUB_USER",
                     style = MaterialTheme.typography.titleMedium,
@@ -431,7 +530,7 @@ fun AboutScreen(onBack: () -> Unit) {
                 }
             }
             row { sh -> Link("Check for updates", "Ask GitHub whether there's a newer version", sh) { AppGraph.checkForUpdate(force = true) } }
-            row { sh -> Link("Source code", "github.com/Tintloom/video", sh) { openExternal(context, "https://github.com/Tintloom/video") } }
+            row { sh -> Link("Source code", "github.com/Tintloom/clips", sh) { openExternal(context, "https://github.com/Tintloom/clips") } }
             row { sh -> Link("Website", "tintloom.github.io", sh) { openExternal(context, "https://tintloom.github.io") } }
         }
         group("Licence") {
@@ -456,7 +555,7 @@ fun AboutScreen(onBack: () -> Unit) {
         }
         item {
             Text(
-                "Not affiliated with YouTube or Google.",
+                "Not affiliated with YouTube, Google, TikTok, ByteDance, Instagram or Meta. TikTok and Reels are their own websites, shown as a browser would.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -532,8 +631,9 @@ private fun SettingsScaffold(title: String, onBack: () -> Unit, content: android
             )
         },
     ) { pad ->
+        // A readable column on tablets and Chromebooks rather than rows stretched edge to edge.
         LazyColumn(
-            Modifier.fillMaxSize().padding(top = pad.calculateTopPadding()),
+            Modifier.fillMaxSize().padding(top = pad.calculateTopPadding()).wrapContentWidth().widthIn(max = 720.dp),
             contentPadding = listPadding(LocalBottomPadding.current),
             content = content,
         )

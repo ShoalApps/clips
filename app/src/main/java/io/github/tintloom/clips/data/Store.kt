@@ -70,6 +70,10 @@ data class Settings(
 
     // Shown once: the Shorts tab points people to Tintloom Clips.
     val clipsIntroSeen: Boolean = true,
+    // Tintloom Clips: which sources get a tab, and which one opens first ("shorts", "tiktok", "reels").
+    val showTikTok: Boolean = true,
+    val showReels: Boolean = true,
+    val startTab: String = "shorts",
 
     // Updates
     /** Check GitHub once a day for a newer release. */

@@ -3,26 +3,27 @@
 A Material You app for short videos, part of [Tintloom](https://tintloom.github.io): YouTube Shorts,
 TikTok and Instagram Reels in one calm, Material 3 Expressive feed.
 
-**Status: early.** The YouTube Shorts feed works, and TikTok and Reels links open in their official
-embed players. Install `TintloomClips.apk` from the newest [release](https://github.com/Tintloom/clips/releases/latest).
+Install `TintloomClips.apk` from the newest [release](https://github.com/Tintloom/clips/releases/latest).
 
-## Plan
+## What it does
 
-- **YouTube Shorts feed**: built on NewPipeExtractor, like Tintloom Video, with the same three-player
-  preloading, layouts (YouTube, TikTok and Reels styles), per-visit and daily limits, SponsorBlock-free
-  playback and Return YouTube Dislike counts.
-- **TikTok and Reels links**: shared or opened links play through TikTok's and Instagram's official
-  embed players, which both companies offer to other apps.
-- **One feed, many sources**: each source is a plug-in, so new ones can be added without touching the UI.
-- **Shared Tintloom pieces**: wallpaper colours with the mauve fallback, the adaptive navigation bar and
-  rail, segmented settings, the GitHub updater and the credits.
+- **Three tabs, one app**: Shorts · TikTok · Reels along the top. Turn any of them off, and choose
+  which one opens first.
+- **YouTube Shorts**: a native feed built on NewPipeExtractor, like Tintloom Video, at the best
+  quality (1080p and up), with YouTube, TikTok or Reels layouts, Return YouTube Dislike, DeArrow,
+  comment likes, and per-visit and daily limits. Sign in to YouTube for likes and Shorts picked for you.
+- **TikTok and Instagram Reels**: their own websites in the app, signed in with your own accounts on
+  their own login pages (your password goes only to them). Phones get their mobile sites, tablets
+  and Chromebooks their desktop ones. Each tab keeps its place, and only the one on screen plays.
+- **Links**: open or share a Shorts, TikTok or Reels link with Clips and it lands in the right tab.
+- **Settings like the other Tintloom apps**: accounts for all three, sources, theme and wallpaper
+  colours, Shorts options, screen time, updates, About, and hidden developer settings.
 
-## Not planned without a decision
+## Why the tabs aren't one blended feed
 
-Full TikTok and Instagram feeds would mean scraping their private APIs, which breaks their terms and
-which Meta in particular has taken to court. Tintloom avoids that unless an official route exists.
-For a patched official TikTok app, see [Hushfeed](https://github.com/SysAdminDoc/HushFeed), a Morphe
-patch bundle you apply yourself.
+Mixing TikTok and Instagram videos into a single feed would mean scraping their private APIs, which
+breaks their terms and which Meta in particular has taken to court. Showing their own websites, as a
+browser does, keeps Clips on the right side of that while still putting everything in one place.
 
 ## Licence
 
