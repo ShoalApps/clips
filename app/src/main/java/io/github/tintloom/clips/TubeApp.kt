@@ -111,6 +111,8 @@ object AppGraph {
 
     /** Looks for a newer release: at most once a day automatically, or right away when asked. */
     fun checkForUpdate(force: Boolean = false) {
+        // Tintloom Manager handles updates when it is installed.
+        if (!force && io.github.tintloom.clips.TintloomManager.installed(app)) return
         val U = io.github.tintloom.clips.data.Updater
         if (!U.canUpdate(app)) {
             if (force) Update.message = "Development builds don't update themselves"
