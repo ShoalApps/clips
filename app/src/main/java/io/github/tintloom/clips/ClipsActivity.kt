@@ -101,6 +101,7 @@ class ClipsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SwordfishNotice.show(this)
         enableEdgeToEdge()
         incoming.value = linkFrom(intent)
         AppGraph.checkForUpdate()
