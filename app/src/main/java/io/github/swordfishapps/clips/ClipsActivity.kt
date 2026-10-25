@@ -111,6 +111,11 @@ class ClipsActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        AppGraph.pullManagerAccounts()
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         incoming.value = linkFrom(intent)
