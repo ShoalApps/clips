@@ -8,8 +8,8 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:data="materialtube://search"
-            android:targetPackage="io.github.tintloom.clips"
-            android:targetClass="io.github.tintloom.clips.MainActivity" />
+            android:targetPackage="io.github.swordfishapps.clips"
+            android:targetClass="io.github.swordfishapps.clips.MainActivity" />
     </shortcut>
     <shortcut
         android:shortcutId="subs"
@@ -19,8 +19,8 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:data="materialtube://subs"
-            android:targetPackage="io.github.tintloom.clips"
-            android:targetClass="io.github.tintloom.clips.MainActivity" />
+            android:targetPackage="io.github.swordfishapps.clips"
+            android:targetClass="io.github.swordfishapps.clips.MainActivity" />
     </shortcut>
     <shortcut
         android:shortcutId="shorts"
@@ -30,7 +30,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:data="materialtube://shorts"
-            android:targetPackage="io.github.tintloom.clips"
-            android:targetClass="io.github.tintloom.clips.MainActivity" />
+            android:targetPackage="io.github.swordfishapps.clips"
+            android:targetClass="io.github.swordfishapps.clips.MainActivity" />
     </shortcut>
 </shortcuts>
