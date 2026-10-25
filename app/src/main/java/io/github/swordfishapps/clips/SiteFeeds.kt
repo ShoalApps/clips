@@ -97,7 +97,15 @@ object SiteViews {
             settings.loadWithOverviewMode = wide
             CookieManager.getInstance().setAcceptCookie(true)
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
+            // The site-tidying script, before the sites' own scripts run (or on page load on old WebViews).
+            val tidy = context.assets.open("sites/tidy.js").bufferedReader().use { it.readText() }
+            val early = androidx.webkit.WebViewFeature.isFeatureSupported(androidx.webkit.WebViewFeature.DOCUMENT_START_SCRIPT)
+            if (early) androidx.webkit.WebViewCompat.addDocumentStartJavaScript(this, tidy, setOf(site.home, site.home.replace("www.", "m.")))
             webViewClient = object : WebViewClient() {
+                override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
+                    if (!early) view.evaluateJavascript(tidy, null)
+                }
+
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     val uri = request.url
                     if (uri.scheme == "https" && site.owns(uri.host.orEmpty())) return false
