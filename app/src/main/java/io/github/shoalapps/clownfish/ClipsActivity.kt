@@ -101,6 +101,7 @@ class ClipsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Telemetry.askOnce(this)
         DataMover.offerUninstall(this)
         enableEdgeToEdge()
         incoming.value = linkFrom(intent)
@@ -181,7 +182,9 @@ private fun ClipsRoot(incoming: String?, onHandled: () -> Unit, onExit: () -> Un
     }
 
     LaunchedEffect(incoming) {
-        if (incoming != null) { open(incoming); onHandled() }
+        // From the widget: clownfish://tab/<shorts|tiktok|reels>
+        if (incoming != null && incoming.startsWith("clownfish://tab/")) { tab = incoming.substringAfter("clownfish://tab/"); screen = Screen.Feed; onHandled() }
+        else if (incoming != null) { open(incoming); onHandled() }
     }
     BackHandler(enabled = screen != Screen.Feed) {
         screen = when (screen) { Screen.About, Screen.Developer, Screen.YouTubeSignIn, Screen.ChannelPicker -> Screen.Settings; else -> Screen.Feed }

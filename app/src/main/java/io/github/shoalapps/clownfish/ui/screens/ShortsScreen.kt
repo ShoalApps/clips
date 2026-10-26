@@ -517,19 +517,7 @@ fun ShortsScreen(onChannel: (String) -> Unit, onExit: () -> Unit, vm: ShortsView
                 }
             }
         }
-        // Header, no shading: the text carries its own soft shadow.
-        if (vm.limitReached == null && vm.error == null && !vm.loading) {
-            Text(
-                when (layout) { "reels" -> "Reels"; "tiktok" -> "For You"; else -> "Shorts" },
-                color = Color.White,
-                style = overlayText(if (layout == "tiktok") 17.sp else 22.sp, FontWeight.Bold),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(16.dp)
-                    .then(if (layout == "tiktok") Modifier.align(Alignment.TopCenter) else Modifier),
-            )
-        }
+        // No "Shorts" heading here: the tabs at the top already say where you are.
     }
     commentsFor?.let { v -> ShortComments(v) { commentsFor = null } }
 }
