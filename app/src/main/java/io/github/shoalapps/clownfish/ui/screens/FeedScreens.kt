@@ -710,7 +710,7 @@ fun YouScreen(
                         modifier = Modifier.clickable(onClick = onSettings),
                     )
                     ListItem(
-                        headlineContent = { Text("About Anglerfish") },
+                        headlineContent = { Text("About Swordfish") },
                         leadingContent = { Icon(Icons.Outlined.Info, null) },
                         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                         modifier = Modifier.clickable(onClick = onAbout),

@@ -241,7 +241,7 @@ fun SettingsScreen(
 
         group("More") {
             if (s.developerMode) row { sh -> Link("Developer settings", "Advanced tweaks, filters and debugging", sh, onClick = onDeveloper) }
-            row { sh -> Link("About Anglerfish", "Version, credits and licence", sh, onClick = onAbout) }
+            row { sh -> Link("About Swordfish", "Version, credits and licence", sh, onClick = onAbout) }
         }
     }
 

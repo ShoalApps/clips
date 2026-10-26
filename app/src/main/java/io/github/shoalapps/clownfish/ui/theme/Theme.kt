@@ -23,31 +23,31 @@ import io.github.shoalapps.clownfish.data.Settings
 // Fallback palette: Clownfish's colour, generated with Material's colour utilities.
 // Used on Android 11 and below, or with dynamic colour turned off.
 private val Light = lightColorScheme(
-    primary = Color(0xFF8E4D31), onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFFFDBCE), onPrimaryContainer = Color(0xFF71361C),
-    secondary = Color(0xFF77574B), onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFFED4C4), onSecondaryContainer = Color(0xFF5D4035),
-    tertiary = Color(0xFF7F7544), onTertiary = Color(0xFFFFFFFF),
-    tertiaryContainer = Color(0xFF7F7544), onTertiaryContainer = Color(0xFFFFFFFF),
-    background = Color(0xFFFFF8F6), onBackground = Color(0xFF231A16),
-    surface = Color(0xFFFFF8F6), onSurface = Color(0xFF231A16), onSurfaceVariant = Color(0xFF53433E),
-    surfaceContainerLow = Color(0xFFFFF1EC), surfaceContainer = Color(0xFFFCEAE4),
-    surfaceContainerHigh = Color(0xFFF6E4DE), surfaceContainerHighest = Color(0xFFF1DFD9),
-    outline = Color(0xFF83716A), outlineVariant = Color(0xFFD8C2BA), inversePrimary = Color(0xFFFFB598),
+    primary = Color(0xFFAB3142), onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFFFDADA), onPrimaryContainer = Color(0xFF8A172C),
+    secondary = Color(0xFF765657), onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFFBD0D1), onSecondaryContainer = Color(0xFF5D3F40),
+    tertiary = Color(0xFF8E6F43), onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFF8E6F43), onTertiaryContainer = Color(0xFFFFFFFF),
+    background = Color(0xFFFFF8F7), onBackground = Color(0xFF22191A),
+    surface = Color(0xFFFFF8F7), onSurface = Color(0xFF22191A), onSurfaceVariant = Color(0xFF524343),
+    surfaceContainerLow = Color(0xFFFFF0F0), surfaceContainer = Color(0xFFFCEAE9),
+    surfaceContainerHigh = Color(0xFFF6E4E4), surfaceContainerHighest = Color(0xFFF0DEDE),
+    outline = Color(0xFF827071), outlineVariant = Color(0xFFD7C1C1), inversePrimary = Color(0xFFFFB3B6),
 )
 
 private val Dark = darkColorScheme(
-    primary = Color(0xFFFFB598), onPrimary = Color(0xFF552008),
-    primaryContainer = Color(0xFF71361C), onPrimaryContainer = Color(0xFFFFDBCE),
-    secondary = Color(0xFFE7BEAF), onSecondary = Color(0xFF442A20),
-    secondaryContainer = Color(0xFF5D4035), onSecondaryContainer = Color(0xFFFFDBCE),
-    tertiary = Color(0xFFD4C78E), onTertiary = Color(0xFF383006),
-    tertiaryContainer = Color(0xFF9C915D), onTertiaryContainer = Color(0xFF000000),
-    background = Color(0xFF1A110E), onBackground = Color(0xFFF1DFD9),
-    surface = Color(0xFF1A110E), onSurface = Color(0xFFF1DFD9), onSurfaceVariant = Color(0xFFD8C2BA),
-    surfaceContainerLow = Color(0xFF231A16), surfaceContainer = Color(0xFF271E1A),
-    surfaceContainerHigh = Color(0xFF322824), surfaceContainerHighest = Color(0xFF3D322F),
-    outline = Color(0xFFA08D86), outlineVariant = Color(0xFF53433E), inversePrimary = Color(0xFF8E4D31),
+    primary = Color(0xFFFFB3B6), onPrimary = Color(0xFF620D1D),
+    primaryContainer = Color(0xFF8A172C), onPrimaryContainer = Color(0xFFFFDADA),
+    secondary = Color(0xFFE6BDBD), onSecondary = Color(0xFF44292A),
+    secondaryContainer = Color(0xFF5D3F40), onSecondaryContainer = Color(0xFFFFDADA),
+    tertiary = Color(0xFFE6C08D), onTertiary = Color(0xFF432C06),
+    tertiaryContainer = Color(0xFFAD8B5C), onTertiaryContainer = Color(0xFF000000),
+    background = Color(0xFF1A1111), onBackground = Color(0xFFF0DEDE),
+    surface = Color(0xFF1A1111), onSurface = Color(0xFFF0DEDE), onSurfaceVariant = Color(0xFFD7C1C1),
+    surfaceContainerLow = Color(0xFF22191A), surfaceContainer = Color(0xFF271D1D),
+    surfaceContainerHigh = Color(0xFF322828), surfaceContainerHighest = Color(0xFF3D3232),
+    outline = Color(0xFF9F8C8C), outlineVariant = Color(0xFF524343), inversePrimary = Color(0xFFAB3142),
 )
 
 @Composable

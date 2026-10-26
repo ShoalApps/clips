@@ -2,8 +2,8 @@
 // prompts web visitors get (open the app, get the app, sign-up nags, cookie banners). Optional
 // cookies are declined. Runs on every page of the two sites; does nothing anywhere else.
 (function () {
-  if (window.__swordfishTidy) return;
-  window.__swordfishTidy = true;
+  if (window.__pufferfishTidy) return;
+  window.__pufferfishTidy = true;
   const host = location.hostname;
   const site = host.endsWith("tiktok.com") ? "tiktok" : host.endsWith("instagram.com") ? "instagram" : null;
   if (!site) return;

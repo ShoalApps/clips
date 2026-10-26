@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="@color/icon_shape" android:pathData="M51.00,29.30Q54.00,27.00 57.00,29.30L57.00,29.30Q60.00,31.59 63.75,31.10L63.75,31.10Q67.50,30.62 68.95,34.11L68.95,34.11Q70.40,37.60 73.89,39.05L73.89,39.05Q77.38,40.50 76.90,44.25L76.90,44.25Q76.41,48.00 78.70,51.00L78.70,51.00Q81.00,54.00 78.70,57.00L78.70,57.00Q76.41,60.00 76.90,63.75L76.90,63.75Q77.38,67.50 73.89,68.95L73.89,68.95Q70.40,70.40 68.95,73.89L68.95,73.89Q67.50,77.38 63.75,76.90L63.75,76.90Q60.00,76.41 57.00,78.70L57.00,78.70Q54.00,81.00 51.00,78.70L51.00,78.70Q48.00,76.41 44.25,76.90L44.25,76.90Q40.50,77.38 39.05,73.89L39.05,73.89Q37.60,70.40 34.11,68.95L34.11,68.95Q30.62,67.50 31.10,63.75L31.10,63.75Q31.59,60.00 29.30,57.00L29.30,57.00Q27.00,54.00 29.30,51.00L29.30,51.00Q31.59,48.00 31.10,44.25L31.10,44.25Q30.62,40.50 34.11,39.05L34.11,39.05Q37.60,37.60 39.05,34.11L39.05,34.11Q40.50,30.62 44.25,31.10L44.25,31.10Q48.00,31.59 51.00,29.30Z"/>
-    <path android:fillColor="@color/icon_glyph" android:pathData="M33,56 C35,46.5 45,43 55,43 C65,43 72,49 74,56 C72,63 65,69 55,69 C45,69 35,65.5 33,56 Z"/>
-    <path android:fillColor="@color/icon_shape" android:pathData="M64.40,53.00 a1.8,1.8 0 1,0 3.6,0 a1.8,1.8 0 1,0 -3.6,0 Z"/>
-    <path android:fillColor="@color/icon_shape" android:pathData="M60.4,43.6 C62.4,49 62.4,63 60.4,68.4 L57.8,68.8 C59.8,63 59.8,49 57.8,43.2 Z"/>
-    <path android:fillColor="@color/icon_shape" android:pathData="M47.8,44.3 C49.8,50 49.8,62 47.8,67.7 L45.2,67.1 C47.2,61.6 47.2,50.4 45.2,44.9 Z"/>
-    <path android:fillColor="@color/icon_shape" android:pathData="M38.6,49.4 C39.8,53 39.8,59 38.6,62.6 L36.5,61.4 C37.3,58.6 37.3,53.4 36.5,50.6 Z"/>
-    <path android:fillColor="@color/icon_glyph" android:pathData="M35.5,56 L28.2,49.6 C27.2,52 26.8,54 26.8,56 C26.8,58 27.2,60 28.2,62.4 Z"/>
-    <path android:fillColor="@color/icon_glyph" android:pathData="M45,44.6 C47,38 56,37 61,41.6 C62,42.6 62,43.6 61.4,44.4 Z"/>
-    <path android:fillColor="@color/icon_glyph" android:pathData="M47,67.4 C48,72 53,73 56.4,68.8 Z"/>
+    <path android:fillColor="@color/icon_shape" android:pathData="M41,25 H67 A16,16 0 0 1 83,41 V67 A16,16 0 0 1 67,83 H41 A16,16 0 0 1 25,67 V41 A16,16 0 0 1 41,25 Z"/>
+    <path android:fillColor="@color/icon_accent" android:pathData="M 32.8 53.6 C 34.8 44.1 44.8 40.6 54.8 40.6 C 64.8 40.6 71.8 46.6 73.8 53.6 C 71.8 60.6 64.8 66.6 54.8 66.6 C 44.8 66.6 34.8 63.1 32.8 53.6 Z"/>
+    <path android:fillColor="@color/icon_accent" android:pathData="M 35.3 53.6 L 28 47.2 C 27 49.6 26.6 51.6 26.6 53.6 C 26.6 55.6 27 57.6 28 60 Z"/>
+    <path android:fillColor="@color/icon_accent" android:pathData="M 44.8 42.2 C 46.8 35.6 55.8 34.6 60.8 39.2 C 61.8 40.2 61.8 41.2 61.2 42 Z"/>
+    <path android:fillColor="@color/icon_accent" android:pathData="M 46.8 65 C 47.8 69.6 52.8 70.6 56.2 66.4 Z"/>
+    <path android:fillColor="@color/icon_glyph" android:fillType="evenOdd" android:pathData="M 34.6 55 C 36.6 45.5 46.6 42 56.6 42 C 66.6 42 73.6 48 75.6 55 C 73.6 62 66.6 68 56.6 68 C 46.6 68 36.6 64.5 34.6 55 Z"/>
+    <path android:fillColor="@color/icon_shape" android:pathData="M 66 52 a 1.8 1.8 0 1 0 3.6 0 a 1.8 1.8 0 1 0 -3.6 0 Z"/>
+    <path android:fillColor="@color/icon_shape" android:pathData="M 62 42.6 C 64 48 64 62 62 67.4 L 59.4 67.8 C 61.4 62 61.4 48 59.4 42.2 Z"/>
+    <path android:fillColor="@color/icon_shape" android:pathData="M 49.4 43.3 C 51.4 49 51.4 61 49.4 66.7 L 46.8 66.1 C 48.8 60.6 48.8 49.4 46.8 43.9 Z"/>
+    <path android:fillColor="@color/icon_shape" android:pathData="M 40.2 48.4 C 41.4 52 41.4 58 40.2 61.6 L 38.1 60.4 C 38.9 57.6 38.9 52.4 38.1 49.6 Z"/>
+    <path android:fillColor="@color/icon_glyph" android:fillType="evenOdd" android:pathData="M 37.1 55 L 29.8 48.6 C 28.8 51 28.4 53 28.4 55 C 28.4 57 28.8 59 29.8 61.4 Z"/>
+    <path android:fillColor="@color/icon_glyph" android:fillType="evenOdd" android:pathData="M 46.6 43.6 C 48.6 37 57.6 36 62.6 40.6 C 63.6 41.6 63.6 42.6 63 43.4 Z"/>
+    <path android:fillColor="@color/icon_glyph" android:fillType="evenOdd" android:pathData="M 48.6 66.4 C 49.6 71 54.6 72 58 67.8 Z"/>
 </vector>

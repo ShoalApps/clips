@@ -9,7 +9,7 @@ Install `Clownfish.apk` from the newest [release](https://github.com/ShoalApps/c
 
 - **Three tabs, one app**: Shorts · TikTok · Reels along the top. Turn any of them off, and choose
   which one opens first.
-- **YouTube Shorts**: a native feed built on NewPipeExtractor, like Anglerfish, at the best
+- **YouTube Shorts**: a native feed built on NewPipeExtractor, like Swordfish, at the best
   quality (1080p and up), with YouTube, TikTok or Reels layouts, Return YouTube Dislike, DeArrow,
   comment likes, and per-visit and daily limits. Sign in to YouTube for likes and Shorts picked for you.
 - **TikTok and Instagram Reels**: their own websites in the app, signed in with your own accounts on
