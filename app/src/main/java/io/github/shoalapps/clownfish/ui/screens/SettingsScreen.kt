@@ -552,6 +552,7 @@ fun AboutScreen(onBack: () -> Unit) {
                 }
             }
             row { sh -> Link("Check for updates", "Opens Shoal", sh) { io.github.shoalapps.clownfish.ShoalManager.checkForUpdates(context) } }
+            row { sh -> Link("Support Shoal", "Shoal is free and has no ads; donations on Liberapay keep it going", sh) { openExternal(context, "https://liberapay.com/ShoalApps") } }
             row { sh -> Link("Source code", "github.com/ShoalApps/clownfish", sh) { openExternal(context, "https://github.com/ShoalApps/clownfish") } }
             row { sh -> Link("Website", "shoalapps.github.io", sh) { openExternal(context, "https://shoalapps.github.io") } }
         }
