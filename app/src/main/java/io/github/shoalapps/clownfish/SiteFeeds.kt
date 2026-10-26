@@ -14,6 +14,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -37,13 +38,16 @@ enum class Site(
     val loginUrl: String,
     val home: String,
     /** Shown behind the page; Instagram's pages don't paint their own background. */
-    val backdrop: Int,
+    private val lightBackdrop: Int,
     private val hosts: List<String>,
 ) {
     TIKTOK("tiktok", "TikTok", "https://www.tiktok.com/foryou", "https://www.tiktok.com/login", "https://www.tiktok.com", android.graphics.Color.BLACK, listOf("tiktok.com", "tiktokv.com", "tiktokcdn.com", "ttwstatic.com", "byteoversea.com", "ibytedtos.com")),
     REELS("reels", "Reels", "https://www.instagram.com/reels/", "https://www.instagram.com/accounts/login/", "https://www.instagram.com", android.graphics.Color.WHITE, listOf("instagram.com", "cdninstagram.com", "fbcdn.net", "facebook.com"));
 
     /** Pages that belong in the tab; anything else (help pages, other apps) opens outside. */
+    /** Instagram follows the phone's light or dark theme, so its backdrop does too; TikTok is always dark. */
+    fun backdrop(dark: Boolean) = if (dark) android.graphics.Color.BLACK else lightBackdrop
+
     fun owns(host: String) = hosts.any { host == it || host.endsWith(".$it") }
 
     /** Both sites keep their login in a "sessionid" cookie. */
@@ -90,7 +94,7 @@ object SiteViews {
         // Debug builds can be inspected from a computer (chrome://inspect); release builds can't.
         if (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE != 0) WebView.setWebContentsDebuggingEnabled(true)
         WebView(context).apply {
-            setBackgroundColor(site.backdrop)
+            setBackgroundColor(site.backdrop((context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES))
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.mediaPlaybackRequiresUserGesture = false
@@ -174,19 +178,33 @@ fun SiteFeed(site: Site, modifier: Modifier = Modifier) {
         onDispose {
             view.removeCallbacks(ticker)
             SiteViews.pause(site)
-            (view.parent as? ViewGroup)?.removeView(view)
         }
     }
     // On tablets and Chromebooks, the feed is a centred upright phone shape, as in the TikTok and
     // Instagram apps on a tablet, so the sites' phone layouts look right.
     val wide = androidx.compose.ui.platform.LocalConfiguration.current.let { it.screenWidthDp > it.screenHeightDp && it.screenWidthDp >= 600 }
-    androidx.compose.foundation.layout.Box(
-        modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color(site.backdrop)),
-        contentAlignment = androidx.compose.ui.Alignment.Center,
-    ) {
-        AndroidView(
-            factory = { (view.parent as? ViewGroup)?.removeView(view); view },
-            modifier = if (wide) Modifier.fillMaxHeight().aspectRatio(9f / 16f, matchHeightConstraintsFirst = true) else Modifier.fillMaxSize(),
-        )
+    // Each site gets its own holder: tabs share this spot on screen, and a reused holder would
+    // keep showing the first site while the second sat detached at zero size (a blank page).
+    val dark = androidx.compose.foundation.isSystemInDarkTheme()
+    androidx.compose.runtime.key(site) {
+        // The sites' own bottom bars stay above Android's buttons.
+        androidx.compose.foundation.layout.Box(
+            modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color(site.backdrop(dark))).navigationBarsPadding(),
+            contentAlignment = androidx.compose.ui.Alignment.Center,
+        ) {
+            // The page lives in a holder of this tab's own. When tabs switch, the new tab can take the
+            // page before the old one is cleaned up, so the old one only lets go of its own holder;
+            // taking it back from the new tab left it off screen, blank, at zero size.
+            AndroidView(
+                factory = { ctx ->
+                    android.widget.FrameLayout(ctx).apply {
+                        (view.parent as? ViewGroup)?.removeView(view)
+                        addView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                    }
+                },
+                onRelease = { holder -> if (view.parent === holder) holder.removeView(view) },
+                modifier = if (wide) Modifier.fillMaxHeight().aspectRatio(9f / 16f, matchHeightConstraintsFirst = true) else Modifier.fillMaxSize(),
+            )
+        }
     }
 }
