@@ -12,6 +12,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -91,10 +94,8 @@ object SiteViews {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.mediaPlaybackRequiresUserGesture = false
-            val wide = context.resources.configuration.screenWidthDp >= 900
-            settings.userAgentString = chromeAgent(settings.userAgentString, wide)
-            settings.useWideViewPort = wide
-            settings.loadWithOverviewMode = wide
+            // Always the phone version, like the apps: on tablets it sits in a phone-shaped frame (SiteFeed).
+            settings.userAgentString = chromeAgent(settings.userAgentString, wide = false)
             CookieManager.getInstance().setAcceptCookie(true)
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
             // The site-tidying script, before the sites' own scripts run (or on page load on old WebViews).
@@ -176,5 +177,16 @@ fun SiteFeed(site: Site, modifier: Modifier = Modifier) {
             (view.parent as? ViewGroup)?.removeView(view)
         }
     }
-    AndroidView(factory = { (view.parent as? ViewGroup)?.removeView(view); view }, modifier = modifier.fillMaxSize())
+    // On tablets and Chromebooks, the feed is a centred upright phone shape, as in the TikTok and
+    // Instagram apps on a tablet, so the sites' phone layouts look right.
+    val wide = androidx.compose.ui.platform.LocalConfiguration.current.let { it.screenWidthDp > it.screenHeightDp && it.screenWidthDp >= 600 }
+    androidx.compose.foundation.layout.Box(
+        modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color(site.backdrop)),
+        contentAlignment = androidx.compose.ui.Alignment.Center,
+    ) {
+        AndroidView(
+            factory = { (view.parent as? ViewGroup)?.removeView(view); view },
+            modifier = if (wide) Modifier.fillMaxHeight().aspectRatio(9f / 16f, matchHeightConstraintsFirst = true) else Modifier.fillMaxSize(),
+        )
+    }
 }
