@@ -189,13 +189,13 @@ fun SettingsScreen(
 
         group("Video quality") {
             row { sh ->
-                Link("On Wi-Fi", "${s.qualityWifi}p", sh) {
-                    choice = Choice("Quality on Wi-Fi", qualityChoices(), s.qualityWifi.toString()) { v -> update { it.copy(qualityWifi = v.toInt()) } }
+                Link("On unmetered networks", "${s.qualityWifi}p", sh) {
+                    choice = Choice("Quality on unmetered networks", qualityChoices(), s.qualityWifi.toString()) { v -> update { it.copy(qualityWifi = v.toInt()) } }
                 }
             }
             row { sh ->
-                Link("On mobile networks", "${s.qualityMobile}p", sh) {
-                    choice = Choice("Quality on mobile networks", qualityChoices(), s.qualityMobile.toString()) { v -> update { it.copy(qualityMobile = v.toInt()) } }
+                Link("On metered networks", "${s.qualityMobile}p", sh) {
+                    choice = Choice("Quality on metered networks", qualityChoices(), s.qualityMobile.toString()) { v -> update { it.copy(qualityMobile = v.toInt()) } }
                 }
             }
         }
@@ -467,6 +467,14 @@ fun ClipsSettingsScreen(
                 val keys = listOf("youtube", "tiktok", "reels")
                 Segmented("Layout", listOf("YouTube", "TikTok", "Reels"), keys.indexOf(s.shortsLayout).coerceAtLeast(0), sh) { i -> update { it.copy(shortsLayout = keys[i]) } }
             }
+            val shortsQualities = listOf("Best available" to "0") + qualityOptions.map { "${it}p" to it.toString() }
+            fun qualityLabel(value: Int) = if (value == 0) "Best available" else "${value}p"
+            row { sh -> Link("Quality on unmetered networks", qualityLabel(s.shortsQualityUnmetered), sh) {
+                choice = Choice("Shorts quality on unmetered networks", shortsQualities, s.shortsQualityUnmetered.toString()) { v -> update { it.copy(shortsQualityUnmetered = v.toInt()) } }
+            } }
+            row { sh -> Link("Quality on metered networks", qualityLabel(s.shortsQualityMetered), sh) {
+                choice = Choice("Shorts quality on metered networks", shortsQualities, s.shortsQualityMetered.toString()) { v -> update { it.copy(shortsQualityMetered = v.toInt()) } }
+            } }
             row { sh -> Toggle("Return YouTube Dislike", "Show dislike counts", s.ryd, sh) { v -> update { it.copy(ryd = v) } } }
             row { sh -> Toggle("DeArrow", "Replace clickbait titles", s.deArrow, sh) { v -> update { it.copy(deArrow = v) } } }
         }

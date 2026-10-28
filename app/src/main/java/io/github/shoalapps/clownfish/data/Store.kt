@@ -28,6 +28,9 @@ data class Settings(
     val shortsSessionLimit: Int = 0,
     /** Max minutes of Shorts per day; 0 = no limit */
     val shortsDailyMinutes: Int = 0,
+    /** Maximum resolution for Shorts; 0 keeps the best available quality. */
+    val shortsQualityUnmetered: Int = 0,
+    val shortsQualityMetered: Int = 0,
 
     // Quality
     val qualityWifi: Int = 1080,

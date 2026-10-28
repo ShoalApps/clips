@@ -195,6 +195,7 @@ class ShortsViewModel : ViewModel() {
     val votes = mutableStateMapOf<String, RydVotes>()
 
     private var active = false
+    private var preparedQuality: Int? = null
     private var viewedThisSession = mutableSetOf<String>()
 
     init {
@@ -215,6 +216,8 @@ class ShortsViewModel : ViewModel() {
         viewModelScope.launch {
             var tick = 0
             while (true) {
+                // No playback or progress updates are needed while Shorts is hidden.
+                if (!active) { delay(500); continue }
                 val p = currentId?.let { playerFor(it) }
                 val awake = active && p?.isPlaying == true
                 if (ScreenAwake.shorts != awake) ScreenAwake.shorts = awake
@@ -327,6 +330,20 @@ class ShortsViewModel : ViewModel() {
         viewedThisSession += item.id
         checkSessionLimit()
 
+        val cm = AppGraph.app.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+        val unmetered = cm.getNetworkCapabilities(cm.activeNetwork)
+            ?.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_NOT_METERED) == true
+        val maxHeight = io.github.shoalapps.clownfish.data.ShortsQuality.maxHeight(AppGraph.store.settings.value, unmetered)
+        if (preparedQuality != null && preparedQuality != maxHeight) {
+            for (slot in 0 until 3) {
+                slotJobs[slot]?.cancel()
+                pool[slot].stop()
+                pool[slot].clearMediaItems()
+                slotId[slot] = null
+            }
+        }
+        preparedQuality = maxHeight
+
         val wanted = listOf(index, index + 1, index - 1).mapNotNull { items.getOrNull(it)?.id }
         for (slot in 0 until 3) {
             if (slotId[slot] !in wanted) {
@@ -344,7 +361,7 @@ class ShortsViewModel : ViewModel() {
             slotJobs[slot] = viewModelScope.launch {
                 try {
                     val inf = info(id)
-                    val src = StreamPicker.buildSource(StreamPicker.pick(inf, Int.MAX_VALUE), inf) // Shorts are short: always the best quality
+                    val src = StreamPicker.buildSource(StreamPicker.pick(inf, maxHeight), inf)
                     if (src == null) { markFailed(id); return@launch }
                     if (slotId[slot] != id) return@launch
                     pool[slot].setMediaSource(src)
@@ -406,6 +423,7 @@ class ShortsViewModel : ViewModel() {
 
     fun setActive(on: Boolean) {
         active = on
+        if (!on) ScreenAwake.shorts = false
         if (on) {
             takeLaunch()
             PlayerHolder.player.pause()

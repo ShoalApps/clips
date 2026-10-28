@@ -30,6 +30,15 @@ class ServicesTest {
         assertEquals(Settings().qualityWifi, s.qualityWifi)
     }
 
+    @Test fun shortsQualityDefaultsAndSavedChoices() {
+        val old = json.decodeFromString<Settings>("""{"theme":2}""")
+        assertEquals(0, old.shortsQualityMetered)
+        assertEquals(0, old.shortsQualityUnmetered)
+        val saved = json.decodeFromString<Settings>("""{"shortsQualityMetered":480,"shortsQualityUnmetered":2160}""")
+        assertEquals(480, saved.shortsQualityMetered)
+        assertEquals(2160, saved.shortsQualityUnmetered)
+    }
+
     @Test fun learningTopicsHaveSearches() {
         LearningTopics.all.forEach {
             assert(it.queries.isNotEmpty()) { it.key }
