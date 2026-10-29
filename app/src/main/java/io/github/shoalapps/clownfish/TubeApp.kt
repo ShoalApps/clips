@@ -31,8 +31,10 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class TubeApp : Application(), SingletonImageLoader.Factory {
+    override fun attachBaseContext(base: android.content.Context) { super.attachBaseContext(AppLanguage.wrap(base)) }
     override fun onCreate() {
         super.onCreate()
+        AppLanguage.init(this)
         Telemetry.init(this)
         DataMover.run(this)
         CrashReporter.install(this)

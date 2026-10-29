@@ -18,6 +18,14 @@ import org.junit.runner.RunWith
 class NavigationSmokeTest {
     @get:Rule val compose = createAndroidComposeRule<ClipsActivity>()
 
+    @org.junit.Before fun dismissReleaseNotes() {
+        compose.waitForIdle()
+        if (compose.onAllNodesWithText("Let's dive in").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithText("Let's dive in").performClick()
+            compose.waitForIdle()
+        }
+    }
+
     @Test fun meteredShortsQualityCanBeInspectedWithoutChangingIt() {
         compose.onNodeWithContentDescription("Settings").performClick()
         compose.onNode(hasScrollAction()).performScrollToNode(hasText("Quality on metered networks"))

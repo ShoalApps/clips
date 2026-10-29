@@ -37,7 +37,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.Icon
+import io.github.shoalapps.clownfish.LocalisedIcon as Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItemDefaults
@@ -52,7 +52,7 @@ import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import io.github.shoalapps.clownfish.LocalisedText as Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -97,6 +97,7 @@ private sealed interface Screen {
 }
 
 class ClipsActivity : ComponentActivity() {
+    override fun attachBaseContext(base: android.content.Context) { super.attachBaseContext(io.github.shoalapps.clownfish.AppLanguage.wrap(base)) }
     private val incoming = mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,7 +109,7 @@ class ClipsActivity : ComponentActivity() {
         AppGraph.checkForUpdate()
         setContent {
             val settings by AppGraph.store.settings.collectAsState()
-            TubeTheme(settings) { ClipsRoot(incoming.value, onHandled = { incoming.value = null }, onExit = ::finish) }
+            TubeTheme(settings) { WhatsNew.Host(); ClipsRoot(incoming.value, onHandled = { incoming.value = null }, onExit = ::finish) }
         }
     }
 
