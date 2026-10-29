@@ -4,9 +4,13 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ShortsQualityTest {
-    @Test fun defaultsPreserveBestAvailableOnBothNetworkTypes() {
+    @Test fun defaultsUse720pOnDataAndBestAvailableOnWifi() {
         assertEquals(Int.MAX_VALUE, ShortsQuality.maxHeight(Settings(), unmetered = true))
-        assertEquals(Int.MAX_VALUE, ShortsQuality.maxHeight(Settings(), unmetered = false))
+        assertEquals(720, ShortsQuality.maxHeight(Settings(), unmetered = false))
+    }
+
+    @Test fun dataSaverCapsAnExplicitHigherQuality() {
+        assertEquals(720, ShortsQuality.maxHeight(Settings(shortsQualityMetered = 2160), unmetered = false, savingData = true))
     }
 
     @Test fun selectsTheLimitForTheActualNetwork() {

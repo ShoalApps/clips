@@ -32,7 +32,7 @@ class ServicesTest {
 
     @Test fun shortsQualityDefaultsAndSavedChoices() {
         val old = json.decodeFromString<Settings>("""{"theme":2}""")
-        assertEquals(0, old.shortsQualityMetered)
+        assertEquals(720, old.shortsQualityMetered)
         assertEquals(0, old.shortsQualityUnmetered)
         val saved = json.decodeFromString<Settings>("""{"shortsQualityMetered":480,"shortsQualityUnmetered":2160}""")
         assertEquals(480, saved.shortsQualityMetered)

@@ -340,7 +340,7 @@ class ShortsViewModel : ViewModel() {
         val cm = AppGraph.app.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
         val unmetered = cm.getNetworkCapabilities(cm.activeNetwork)
             ?.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_NOT_METERED) == true
-        val maxHeight = io.github.shoalapps.clownfish.data.ShortsQuality.maxHeight(AppGraph.store.settings.value, unmetered)
+        val maxHeight = io.github.shoalapps.clownfish.data.ShortsQuality.maxHeight(AppGraph.store.settings.value, unmetered, io.github.shoalapps.clownfish.data.NetworkPolicy.savingData())
         if (preparedQuality != null && preparedQuality != maxHeight) {
             for (slot in 0 until 3) {
                 slotJobs[slot]?.cancel()
