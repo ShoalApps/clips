@@ -29,6 +29,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    override fun attachBaseContext(base: android.content.Context) { super.attachBaseContext(io.github.shoalapps.clownfish.AppLanguage.wrap(base)) }
     private val playerVm: PlayerViewModel by viewModels()
     private val inPip = mutableStateOf(false)
     /** Screen to open from a launcher shortcut (search, subs, shorts). */
@@ -78,6 +79,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val settings by AppGraph.store.settings.collectAsStateWithLifecycle()
             TubeTheme(settings) {
+                WhatsNew.Host()
                 AppRoot(
                     vm = playerVm,
                     inPip = inPip.value,

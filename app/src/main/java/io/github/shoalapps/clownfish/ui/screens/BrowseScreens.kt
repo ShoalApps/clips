@@ -35,13 +35,13 @@ import androidx.compose.material.icons.rounded.NorthWest
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
+import io.github.shoalapps.clownfish.LocalisedIcon as Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import io.github.shoalapps.clownfish.LocalisedText as Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
@@ -426,7 +426,7 @@ fun ChannelScreen(
                         ) {
                             io.github.shoalapps.clownfish.ui.components.CookieAvatar(d.avatar, 80.dp)
                             Column(Modifier.padding(start = 16.dp).weight(1f)) {
-                                Text(d.name, style = MaterialTheme.typography.headlineSmall, maxLines = 2)
+                                Text(d.name, localise = false, style = MaterialTheme.typography.headlineSmall, maxLines = 2)
                                 if (d.subscribers >= 0) {
                                     Text(
                                         "${formatCount(d.subscribers)} subscribers",

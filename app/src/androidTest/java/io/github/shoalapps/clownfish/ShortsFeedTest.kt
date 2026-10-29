@@ -4,6 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertTrue
@@ -15,6 +18,14 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ShortsFeedTest {
     @get:Rule val compose = createAndroidComposeRule<ClipsActivity>()
+
+    @org.junit.Before fun dismissReleaseNotes() {
+        compose.waitForIdle()
+        if (compose.onAllNodesWithText("Let's dive in").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithText("Let's dive in").performClick()
+            compose.waitForIdle()
+        }
+    }
 
     @Test fun shortsFeedShowsAUsableVideo() {
         compose.activityRule.scenario.onActivity {

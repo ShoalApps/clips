@@ -39,7 +39,7 @@ import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
+import io.github.shoalapps.clownfish.LocalisedIcon as Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -55,7 +55,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import io.github.shoalapps.clownfish.LocalisedText as Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -130,6 +130,8 @@ fun SettingsScreen(
                 row { sh -> Link("Sign in to YouTube", "Your feed, subscriptions, likes and Watch later", sh, onClick = onSignIn) }
             }
         }
+
+        item(key = "app-language") { io.github.shoalapps.clownfish.AppLanguage.SettingsRow() }
 
         group("Appearance") {
             row { sh -> Segmented("Theme", listOf("Auto", "Light", "Dark"), s.theme, sh) { i -> update { it.copy(theme = i) } } }
@@ -241,6 +243,7 @@ fun SettingsScreen(
         }
 
         group("More") {
+            row { sh -> Link("What's new", "Changes in this version", sh) { io.github.shoalapps.clownfish.WhatsNew.open() } }
             if (s.developerMode) row { sh -> Link("Developer settings", "Advanced tweaks, filters and debugging", sh, onClick = onDeveloper) }
             row { sh -> Link("About Swordfish", "Version, credits and licence", sh, onClick = onAbout) }
         }
@@ -785,7 +788,7 @@ private fun Segmented(title: String, labels: List<String>, selected: Int, shapes
 private fun ChoiceDialog(c: Choice, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(c.title) },
+        title = { Text(c.title, localise = false) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(0.dp)) {
                 c.options.forEach { (label, value) ->
