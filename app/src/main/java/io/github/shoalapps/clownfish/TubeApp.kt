@@ -44,6 +44,13 @@ class TubeApp : Application(), SingletonImageLoader.Factory {
     /** Big memory + disk caches so thumbnails never reload when you scroll back up. */
     override fun newImageLoader(context: PlatformContext): ImageLoader =
         ImageLoader.Builder(context)
+            .components {
+                add(coil3.intercept.Interceptor { chain ->
+                    val request = if (io.github.shoalapps.clownfish.player.NetworkInfo.offline() || io.github.shoalapps.clownfish.data.NetworkPolicy.savingData())
+                        chain.request.newBuilder().networkCachePolicy(coil3.request.CachePolicy.DISABLED).build() else chain.request
+                    chain.withRequest(request).proceed()
+                })
+            }
             .crossfade(200)
             .memoryCache {
                 MemoryCache.Builder()
@@ -75,6 +82,8 @@ object AppGraph {
     val sponsorBlock by lazy { SponsorBlock(http) }
     val deArrow by lazy { DeArrow(http) }
     val ryd by lazy { Ryd(http) }
+    val offline by lazy { io.github.shoalapps.clownfish.data.OfflineVideos(app) }
+    val actions by lazy { io.github.shoalapps.clownfish.data.OfflineActions(app) }
     val account by lazy { YouTubeAccount(http, store) }
 
     /** For fire-and-forget work that should outlive a screen (e.g. syncing a subscribe). */
@@ -173,7 +182,8 @@ object AppGraph {
         runCatching {
             cm.registerDefaultNetworkCallback(object : android.net.ConnectivityManager.NetworkCallback() {
                 override fun onCapabilitiesChanged(network: android.net.Network, caps: android.net.NetworkCapabilities) {
-                    online.value = caps.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+                    online.value = caps.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED) && !store.settings.value.offlineMode
+                    scope.launch { offline.reconcile(); if (online.value) { actions.reconnect(); actions.flush() } }
                 }
                 override fun onLost(network: android.net.Network) { online.value = false }
             })
@@ -187,6 +197,7 @@ object AppGraph {
     private fun warmUp() {
         scope.launch {
             kotlinx.coroutines.delay(2500) // let Home load first
+            if (!io.github.shoalapps.clownfish.data.NetworkPolicy.backgroundAllowed()) return@launch
             if (store.settings.value.shortsDisabled) return@launch
             val fromAccount = if (store.signedIn) runCatching { account.home().shorts }.getOrDefault(emptyList()) else emptyList()
             val more = if (fromAccount.size >= 20) emptyList() else runCatching { repo.shorts(store.subs.value) }.getOrDefault(emptyList())
@@ -223,7 +234,18 @@ object AppGraph {
             ContentCountry(locale.country.ifBlank { "GB" }),
         )
         if (store.signedIn && store.account.value == null) syncAccount()
+        scope.launch { store.settings.collect {
+            online.value = !io.github.shoalapps.clownfish.player.NetworkInfo.offline()
+            offline.reconcile()
+            if (online.value) { actions.schedule(); actions.flush() }
+        } }
+        androidx.core.content.ContextCompat.registerReceiver(app, object : android.content.BroadcastReceiver() {
+            override fun onReceive(context: android.content.Context, intent: android.content.Intent) {
+                scope.launch { offline.reconcile(); actions.flush() }
+            }
+        }, android.content.IntentFilter(android.net.ConnectivityManager.ACTION_RESTRICT_BACKGROUND_CHANGED), androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED)
         watchNetwork()
+        scope.launch { actions.schedule(); actions.flush() }
         warmUp()
     }
 }

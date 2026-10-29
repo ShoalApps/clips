@@ -245,9 +245,16 @@ class ShortsViewModel : ViewModel() {
     }
 
     fun load() {
+        for (slot in 0 until 3) { slotJobs[slot]?.cancel(); pool[slot].stop(); pool[slot].clearMediaItems(); slotId[slot] = null }
         loading = true; error = null
         viewModelScope.launch {
             try {
+                if (NetworkInfo.offline()) {
+                    items = FeedFilter.apply(AppGraph.offline.videos.value.filter { it.complete }.map { it.video })
+                    if (items.isEmpty()) error = "No downloaded Shorts yet. Download some while online."
+                    else onPage(0)
+                    return@launch
+                }
                 val cached = AppGraph.shortsCache.also { AppGraph.shortsCache = null }
                 val list = cached ?: run {
                     val fromAccount = if (AppGraph.store.signedIn) {
@@ -344,7 +351,7 @@ class ShortsViewModel : ViewModel() {
         }
         preparedQuality = maxHeight
 
-        val wanted = listOf(index, index + 1, index - 1).mapNotNull { items.getOrNull(it)?.id }
+        val wanted = (if (io.github.shoalapps.clownfish.data.NetworkPolicy.savingData()) listOf(index) else listOf(index, index + 1, index - 1)).mapNotNull { items.getOrNull(it)?.id }
         for (slot in 0 until 3) {
             if (slotId[slot] !in wanted) {
                 slotJobs[slot]?.cancel()
@@ -360,6 +367,16 @@ class ShortsViewModel : ViewModel() {
             ready.remove(id)
             slotJobs[slot] = viewModelScope.launch {
                 try {
+                    val local = AppGraph.offline.local(id)
+                    if (local != null) {
+                        if (slotId[slot] != id) return@launch
+                        pool[slot].setMediaItem(androidx.media3.common.MediaItem.fromUri(android.net.Uri.fromFile(local)))
+                        pool[slot].playWhenReady = false
+                        pool[slot].prepare()
+                        failStreak = 0; networkError = null
+                        applyPlayState()
+                        return@launch
+                    }
                     val inf = info(id)
                     val src = StreamPicker.buildSource(StreamPicker.pick(inf, maxHeight), inf)
                     if (src == null) { markFailed(id); return@launch }
@@ -380,6 +397,7 @@ class ShortsViewModel : ViewModel() {
         slotVersion++
         applyPlayState()
 
+        if (!io.github.shoalapps.clownfish.data.NetworkPolicy.backgroundAllowed()) return
         // Look further ahead: details, thumbnails and dislikes for three above and below.
         for (i in (index - 3)..(index + 3)) {
             val v = items.getOrNull(i) ?: continue
@@ -457,6 +475,8 @@ class ShortsViewModel : ViewModel() {
 
 @Composable
 fun ShortsScreen(onChannel: (String) -> Unit, onExit: () -> Unit, vm: ShortsViewModel = viewModel()) {
+    val online by AppGraph.online.collectAsState()
+    LaunchedEffect(online) { vm.load() }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(lifecycle) {
         vm.setActive(lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
@@ -771,6 +791,10 @@ private fun ShortPage(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(if (layout == "youtube") 14.dp else 18.dp),
             ) {
+                PlainAction(Icons.Rounded.BookmarkBorder, "Download", Color.White, 28.dp) {
+                    AppGraph.offline.keep(item)
+                    toast(context, "Download saved. View downloads in Settings.")
+                }
                 when (layout) {
                     "tiktok" -> {
                         Box(Modifier.padding(bottom = 6.dp), contentAlignment = Alignment.BottomCenter) {

@@ -448,6 +448,15 @@ fun ClipsSettingsScreen(
             }
         }
 
+        group("Offline") {
+            row { sh -> Toggle("Offline mode", "Play downloaded YouTube Shorts; TikTok and Reels need a connection", s.offlineMode, sh) { v -> update { it.copy(offlineMode = v) } } }
+            row { sh -> Toggle("Allow downloads on mobile data", "Off by default. Data Saver always pauses downloads on metered networks.", !s.downloadWifiOnly, sh) { v -> update { it.copy(downloadWifiOnly = !v) } } }
+        }
+        item { io.github.shoalapps.clownfish.ui.components.OfflineStatus() }
+        item { io.github.shoalapps.clownfish.ui.components.Downloads { video ->
+            io.github.shoalapps.clownfish.ui.screens.ShortsLaunch.start = video
+            onBack()
+        } }
         group("Sources") {
             row { sh -> Toggle("YouTube Shorts", null, !s.shortsDisabled, sh) { v -> update { it.copy(shortsDisabled = !v) } } }
             row { sh -> Toggle("TikTok", "TikTok's website, signed in with your account", s.showTikTok, sh) { v -> update { it.copy(showTikTok = v) } } }
