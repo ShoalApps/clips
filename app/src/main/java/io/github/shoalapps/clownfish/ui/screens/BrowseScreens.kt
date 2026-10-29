@@ -113,12 +113,16 @@ class SearchViewModel : ViewModel() {
         private set
     var error by mutableStateOf<String?>(null)
         private set
+    var moreError by mutableStateOf(false)
+        private set
     /** "", "videos" or "channels" */
     var filter by mutableStateOf("")
         private set
     private var next: Page? = null
     private var suggestJob: Job? = null
     private var searchJob: Job? = null
+    private var moreJob: Job? = null
+    private var generation = 0
 
     fun chooseFilter(f: String) {
         if (f == filter) return
@@ -129,12 +133,18 @@ class SearchViewModel : ViewModel() {
     fun onQuery(q: String) {
         query = q
         submitted = null
+        generation++
+        searchJob?.cancel()
+        moreJob?.cancel()
+        loading = false; loadingMore = false; next = null
         suggestJob?.cancel()
-        if (q.isBlank()) { suggestions = emptyList(); return }
+        suggestions = emptyList()
+        if (q.isBlank()) return
         if (io.github.shoalapps.clownfish.player.NetworkInfo.offline()) { suggestions = emptyList(); return }
         suggestJob = viewModelScope.launch {
             delay(200)
-            suggestions = AppGraph.repo.suggestions(q)
+            val found = AppGraph.repo.suggestions(q)
+            if (query == q && submitted == null) suggestions = found
         }
     }
 
@@ -144,26 +154,32 @@ class SearchViewModel : ViewModel() {
         submitted = q
         AppGraph.store.addSearch(q)
         suggestJob?.cancel()
+        generation++
+        val request = generation
+        val selectedFilter = filter
         searchJob?.cancel()
+        moreJob?.cancel()
+        loadingMore = false; moreError = false
         results = emptyList(); error = null; next = null; loading = true
         searchJob = viewModelScope.launch {
             try {
                 if (io.github.shoalapps.clownfish.player.NetworkInfo.offline()) {
-                    results = if (filter == "channels") emptyList() else
+                    results = if (selectedFilter == "channels") emptyList() else
                         io.github.shoalapps.clownfish.data.FeedFilter.apply(AppGraph.offline.videos.value.filter {
                             it.complete && (it.video.title.contains(q, true) || it.video.channelName.contains(q, true))
                         }.map { it.video }).map { io.github.shoalapps.clownfish.data.Entry.Video(it) }
                     return@launch
                 }
-                val page = AppGraph.repo.search(q, filter = filter)
+                val page = AppGraph.repo.search(q, filter = selectedFilter)
+                if (request != generation) return@launch
                 results = io.github.shoalapps.clownfish.data.FeedFilter.entries(page.items)
                 next = page.next
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                error = io.github.shoalapps.clownfish.player.NetworkInfo.friendlyError(e)
+                if (request == generation) error = io.github.shoalapps.clownfish.player.NetworkInfo.friendlyError(e)
             } finally {
-                loading = false
+                if (request == generation) loading = false
             }
         }
     }
@@ -172,13 +188,22 @@ class SearchViewModel : ViewModel() {
         val q = submitted ?: return
         val page = next ?: return
         if (loadingMore || loading) return
-        loadingMore = true
-        viewModelScope.launch {
-            runCatching { AppGraph.repo.search(q, page, filter) }.onSuccess {
-                results = io.github.shoalapps.clownfish.data.FeedFilter.entries(results + it.items)
-                next = it.next
+        val request = generation
+        val selectedFilter = filter
+        loadingMore = true; moreError = false
+        moreJob = viewModelScope.launch {
+            try {
+                val result = AppGraph.repo.search(q, page, selectedFilter)
+                if (request != generation) return@launch
+                results = io.github.shoalapps.clownfish.data.FeedFilter.entries(results + result.items)
+                next = result.next
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                if (request == generation) moreError = true
+            } finally {
+                if (request == generation) loadingMore = false
             }
-            loadingMore = false
         }
     }
 }
@@ -321,6 +346,7 @@ fun SearchScreen(
                             }
                             flush()
                             if (vm.loadingMore) item { CenterLoading() }
+                            if (vm.moreError) item { ErrorState("Couldn't load more results.", vm::loadMore) }
                         }
                     }
                 }
