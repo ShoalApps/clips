@@ -1,4 +1,4 @@
-# Clownfish
+<p align="center"><a href="https://shoalapps.github.io/"><img src="https://raw.githubusercontent.com/ShoalApps/shoalapps.github.io/main/assets/readme/clownfish.svg" alt="Clownfish - a Shoal app, with the rest of the Shoal family" width="100%"></a></p>
 
 A Material You app for short videos, part of [Shoal](https://shoalapps.github.io): YouTube Shorts,
 TikTok and Instagram Reels in one calm, Material 3 Expressive feed.
