@@ -30,11 +30,15 @@ data class Settings(
     val shortsDailyMinutes: Int = 0,
     /** Maximum resolution for Shorts; 0 keeps the best available quality. */
     val shortsQualityUnmetered: Int = 0,
-    val shortsQualityMetered: Int = 0,
+    val shortsQualityMetered: Int = 720,
 
     // Quality
     val qualityWifi: Int = 1080,
-    val qualityMobile: Int = 1080,
+    val qualityMobile: Int = 720,
+    val offlineMode: Boolean = false,
+    val cacheCurrentVideo: Boolean = false,
+    val autoDownloadCount: Int = 0,
+    val downloadWifiOnly: Boolean = true,
 
     // Playback
     val backgroundPlay: Boolean = true,

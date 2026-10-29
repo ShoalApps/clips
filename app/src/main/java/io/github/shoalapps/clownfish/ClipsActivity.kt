@@ -139,6 +139,7 @@ class ClipsActivity : ComponentActivity() {
 private fun ClipsRoot(incoming: String?, onHandled: () -> Unit, onExit: () -> Unit) {
     val context = LocalContext.current
     val s by AppGraph.store.settings.collectAsState()
+    val online by AppGraph.online.collectAsState()
     var screen by remember { mutableStateOf<Screen>(Screen.Feed) }
     var pasting by remember { mutableStateOf(false) }
     var feedKey by remember { mutableStateOf(0) }
@@ -149,6 +150,8 @@ private fun ClipsRoot(incoming: String?, onHandled: () -> Unit, onExit: () -> Un
     }.ifEmpty { listOf("shorts") }
     var tab by remember { mutableStateOf(s.startTab) }
     if (tab !in tabs) tab = tabs.first()
+
+    LaunchedEffect(online) { if (!online && !s.shortsDisabled) { tab = "shorts"; feedKey++ } }
 
     /** Opens a site in its tab, at a link or its login page. */
     fun showSite(site: Site, url: String) {
@@ -197,7 +200,9 @@ private fun ClipsRoot(incoming: String?, onHandled: () -> Unit, onExit: () -> Un
                 "shorts" -> androidx.compose.runtime.key(feedKey) {
                     ShortsScreen(onChannel = { url -> openExternal(context, url) }, onExit = onExit)
                 }
-                else -> SiteFeed(Site.of(tab)!!, Modifier.statusBarsPadding().padding(top = if (tabs.size > 1) 52.dp else 0.dp))
+                else -> if (!online) androidx.compose.foundation.layout.Column(Modifier.align(Alignment.Center).padding(24.dp)) {
+                    Text("This service needs a connection. Saved YouTube Shorts are available in the Shorts tab.", color = Color.White)
+                } else SiteFeed(Site.of(tab)!!, Modifier.statusBarsPadding().padding(top = if (tabs.size > 1) 52.dp else 0.dp))
             }
             if (tabs.size > 1) SourceTabs(tabs, tab, Modifier.align(Alignment.TopCenter).statusBarsPadding()) { tab = it }
             Row(Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(8.dp)) {
@@ -207,7 +212,7 @@ private fun ClipsRoot(incoming: String?, onHandled: () -> Unit, onExit: () -> Un
             }
         }
         Screen.Settings -> io.github.shoalapps.clownfish.ui.screens.ClipsSettingsScreen(
-            onBack = { screen = Screen.Feed },
+            onBack = { if (ShortsLaunch.start != null) { tab = "shorts"; feedKey++ }; screen = Screen.Feed },
             onYouTubeSignIn = { screen = Screen.YouTubeSignIn },
             onSwitchChannel = { screen = Screen.ChannelPicker },
             onSiteSignIn = { site -> showSite(site, site.loginUrl) },
