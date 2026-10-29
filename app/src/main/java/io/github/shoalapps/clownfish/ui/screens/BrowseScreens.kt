@@ -131,6 +131,7 @@ class SearchViewModel : ViewModel() {
         submitted = null
         suggestJob?.cancel()
         if (q.isBlank()) { suggestions = emptyList(); return }
+        if (io.github.shoalapps.clownfish.player.NetworkInfo.offline()) { suggestions = emptyList(); return }
         suggestJob = viewModelScope.launch {
             delay(200)
             suggestions = AppGraph.repo.suggestions(q)
@@ -147,6 +148,13 @@ class SearchViewModel : ViewModel() {
         results = emptyList(); error = null; next = null; loading = true
         searchJob = viewModelScope.launch {
             try {
+                if (io.github.shoalapps.clownfish.player.NetworkInfo.offline()) {
+                    results = if (filter == "channels") emptyList() else
+                        io.github.shoalapps.clownfish.data.FeedFilter.apply(AppGraph.offline.videos.value.filter {
+                            it.complete && (it.video.title.contains(q, true) || it.video.channelName.contains(q, true))
+                        }.map { it.video }).map { io.github.shoalapps.clownfish.data.Entry.Video(it) }
+                    return@launch
+                }
                 val page = AppGraph.repo.search(q, filter = filter)
                 results = io.github.shoalapps.clownfish.data.FeedFilter.entries(page.items)
                 next = page.next
@@ -282,6 +290,9 @@ fun SearchScreen(
                     when {
                         vm.loading -> item { SkeletonCards() }
                         vm.error != null -> item { ErrorState(vm.error!!, { vm.submit() }) }
+                        vm.results.isEmpty() -> item {
+                            Text(if (io.github.shoalapps.clownfish.player.NetworkInfo.offline()) "No downloaded Shorts match this search." else "No results found.", modifier = Modifier.padding(24.dp))
+                        }
                         else -> {
                             var run = mutableListOf<VideoItem>()
                             val flush = {
